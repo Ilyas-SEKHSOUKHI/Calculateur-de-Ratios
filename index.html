@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Analyse Financière - Calculateur de Ratios</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #f4f6fb;
+      margin: 0;
+      padding: 0;
+      color: #222;
+    }
+    .container {
+      max-width: 700px;
+      margin: 40px auto;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+      padding: 32px 24px 24px 24px;
+    }
+    h1 {
+      text-align: center;
+      color: #2a4d8f;
+      margin-bottom: 8px;
+    }
+    h2 {
+      color: #2a4d8f;
+      margin-top: 32px;
+      margin-bottom: 8px;
+      font-size: 1.2em;
+    }
+    form {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px 24px;
+      margin-bottom: 32px;
+    }
+    label {
+      display: block;
+      font-weight: 500;
+      margin-bottom: 4px;
+    }
+    input[type="number"] {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #cfd8dc;
+      border-radius: 6px;
+      font-size: 1em;
+      background: #f9fafb;
+    }
+    .results {
+      margin-top: 24px;
+      background: #f7fafd;
+      border-radius: 8px;
+      padding: 20px 16px;
+      box-shadow: 0 2px 8px rgba(42,77,143,0.04);
+    }
+    .result-block {
+      margin-bottom: 18px;
+    }
+    .result-label {
+      font-weight: 600;
+      color: #2a4d8f;
+    }
+    .formula {
+      font-size: 0.95em;
+      color: #666;
+      margin-bottom: 4px;
+    }
+    .value {
+      font-size: 1.2em;
+      color: #1b7e3c;
+      font-weight: 700;
+    }
+    .conclusion {
+      font-size: 0.9em;
+      color: #666;
+      margin-top: 4px;
+    }
+    @media (max-width: 600px) {
+      .container { padding: 12px 4px; }
+      form { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Calculateur de Ratios Financiers</h1>
+    <form id="financeForm">
+      <div>
+        <label for="revenu">Revenu Total</label>
+        <input type="number" id="revenu" name="revenu" min="0" step="any" required>
+      </div>
+      <div>
+        <label for="coutVente">Coût des Ventes</label>
+        <input type="number" id="coutVente" name="coutVente" min="0" step="any" required>
+      </div>
+      <div>
+        <label for="beneficeNet">Bénéfice Net</label>
+        <input type="number" id="beneficeNet" name="beneficeNet" min="0" step="any" required>
+      </div>
+      <div>
+        <label for="totalActifs">Total des Actifs</label>
+        <input type="number" id="totalActifs" name="totalActifs" min="0" step="any" required>
+      </div>
+      <div>
+        <label for="capitauxPropres">Capitaux Propres</label>
+        <input type="number" id="capitauxPropres" name="capitauxPropres" min="0" step="any" required>
+      </div>
+      <div>
+        <label for="coursAction">Cours de l'Action</label>
+        <input type="number" id="coursAction" name="coursAction" min="0" step="any" required>
+      </div>
+      <div>
+        <label for="beneficeParAction">Bénéfice par Action (BPA)</label>
+        <input type="number" id="beneficeParAction" name="beneficeParAction" min="0" step="any" required>
+      </div>
+      <div>
+        <label for="valeurComptableParAction">Valeur Comptable par Action</label>
+        <input type="number" id="valeurComptableParAction" name="valeurComptableParAction" min="0" step="any" required>
+      </div>
+    </form>
+    <div class="results">
+      <div class="result-block">
+        <div class="result-label">Marge Bénéfice Brut %</div>
+        <div class="formula">(Revenu Total - Coût des Ventes) / Revenu Total × 100</div>
+        <div class="value" id="margeBrut">-</div>
+        <div class="conclusion" id="conclusionMargeBrut"></div>
+      </div>
+      <div class="result-block">
+        <div class="result-label">Marge Bénéfice Nette %</div>
+        <div class="formula">Bénéfice Net / Revenu Total × 100</div>
+        <div class="value" id="margeNette">-</div>
+        <div class="conclusion" id="conclusionMargeNette"></div>
+      </div>
+      <div class="result-block">
+        <div class="result-label">Retour sur Actif (ROA)</div>
+        <div class="formula">Bénéfice Net / Total des Actifs × 100</div>
+        <div class="value" id="roa">-</div>
+        <div class="conclusion" id="conclusionROA"></div>
+      </div>
+      <div class="result-block">
+        <div class="result-label">Rendement des Capitaux Propres (ROE)</div>
+        <div class="formula">Bénéfice Net / Capitaux Propres × 100</div>
+        <div class="value" id="roe">-</div>
+        <div class="conclusion" id="conclusionROE"></div>
+      </div>
+      <div class="result-block">
+        <div class="result-label">Ratio Cours/Bénéfice (P/E)</div>
+        <div class="formula">Cours de l'Action / Bénéfice par Action</div>
+        <div class="value" id="pe">-</div>
+        <div class="conclusion" id="conclusionPE"></div>
+      </div>
+      <div class="result-block">
+        <div class="result-label">Ratio Cours/Valeur Comptable</div>
+        <div class="formula">Cours de l'Action / Valeur Comptable par Action</div>
+        <div class="value" id="pb">-</div>
+        <div class="conclusion" id="conclusionPB"></div>
+      </div>
+    </div>
+  </div>
+  <script>
+    const form = document.getElementById('financeForm');
+    const fields = [
+      'revenu', 'coutVente', 'beneficeNet', 'totalActifs',
+      'capitauxPropres', 'coursAction', 'beneficeParAction', 'valeurComptableParAction'
+    ];
+    fields.forEach(id => {
+      document.getElementById(id).addEventListener('input', calculerRatios);
+    });
+
+    function formatPercent(val) {
+      return isFinite(val) ? val.toFixed(2) + ' %' : '-';
+    }
+    function formatRatio(val) {
+      return isFinite(val) ? val.toFixed(2) : '-';
+    }
+
+    function calculerRatios() {
+      const revenu = parseFloat(document.getElementById('revenu').value) || 0;
+      const coutVente = parseFloat(document.getElementById('coutVente').value) || 0;
+      const beneficeNet = parseFloat(document.getElementById('beneficeNet').value) || 0;
+      const totalActifs = parseFloat(document.getElementById('totalActifs').value) || 0;
+      const capitauxPropres = parseFloat(document.getElementById('capitauxPropres').value) || 0;
+      const coursAction = parseFloat(document.getElementById('coursAction').value) || 0;
+      const beneficeParAction = parseFloat(document.getElementById('beneficeParAction').value) || 0;
+      const valeurComptableParAction = parseFloat(document.getElementById('valeurComptableParAction').value) || 0;
+
+      // Marge Bénéfice Brut %
+      let margeBrut = revenu !== 0 ? ((revenu - coutVente) / revenu) * 100 : NaN;
+      document.getElementById('margeBrut').textContent = formatPercent(margeBrut);
+      document.getElementById('conclusionMargeBrut').textContent = conclusionMargeBrut(margeBrut);
+
+      // Marge Bénéfice Nette %
+      let margeNette = revenu !== 0 ? (beneficeNet / revenu) * 100 : NaN;
+      document.getElementById('margeNette').textContent = formatPercent(margeNette);
+      document.getElementById('conclusionMargeNette').textContent = conclusionMargeNette(margeNette);
+
+      // ROA
+      let roa = totalActifs !== 0 ? (beneficeNet / totalActifs) * 100 : NaN;
+      document.getElementById('roa').textContent = formatPercent(roa);
+      document.getElementById('conclusionROA').textContent = conclusionROA(roa);
+
+      // ROE
+      let roe = capitauxPropres !== 0 ? (beneficeNet / capitauxPropres) * 100 : NaN;
+      document.getElementById('roe').textContent = formatPercent(roe);
+      document.getElementById('conclusionROE').textContent = conclusionROE(roe);
+
+      // P/E
+      let pe = beneficeParAction !== 0 ? (coursAction / beneficeParAction) : NaN;
+      document.getElementById('pe').textContent = formatRatio(pe);
+      document.getElementById('conclusionPE').textContent = conclusionPE(pe);
+
+      // Cours/Valeur Comptable
+      let pb = valeurComptableParAction !== 0 ? (coursAction / valeurComptableParAction) : NaN;
+      document.getElementById('pb').textContent = formatRatio(pb);
+      document.getElementById('conclusionPB').textContent = conclusionPB(pb);
+    }
+
+    // Fonctions de conclusion pour chaque ratio
+    function conclusionMargeBrut(val) {
+      if (!isFinite(val)) return '';
+      if (val >= 40) return "Excellente marge brute. L'entreprise maîtrise bien ses coûts de production.";
+      if (val >= 20) return "Marge brute correcte. Il y a une bonne gestion des coûts, mais une amélioration est possible.";
+      if (val > 0) return "Marge brute faible. Attention à la rentabilité des ventes.";
+      return "Marge brute négative : l'entreprise vend à perte.";
+    }
+    function conclusionMargeNette(val) {
+      if (!isFinite(val)) return '';
+      if (val >= 15) return "Très bonne rentabilité nette.";
+      if (val >= 5) return "Rentabilité nette moyenne. Peut être améliorée.";
+      if (val > 0) return "Rentabilité nette faible. Vigilance sur les charges et la gestion.";
+      return "Rentabilité nette négative : pertes nettes.";
+    }
+    function conclusionROA(val) {
+      if (!isFinite(val)) return '';
+      if (val >= 7) return "Très bon retour sur actif. Les actifs sont bien utilisés.";
+      if (val >= 3) return "Retour sur actif correct. Optimisation possible.";
+      if (val > 0) return "Retour sur actif faible. Les actifs ne sont pas assez rentables.";
+      return "Retour sur actif négatif : pertes sur les actifs.";
+    }
+    function conclusionROE(val) {
+      if (!isFinite(val)) return '';
+      if (val >= 15) return "Excellent ROE. Les capitaux propres sont très rentables.";
+      if (val >= 8) return "ROE satisfaisant. Bonne rentabilité des capitaux propres.";
+      if (val > 0) return "ROE faible. Les capitaux propres pourraient être mieux valorisés.";
+      return "ROE négatif : pertes pour les actionnaires.";
+    }
+    function conclusionPE(val) {
+      if (!isFinite(val) || val <= 0) return '';
+      if (val < 10) return "Action sous-évaluée ou forte rentabilité. À analyser.";
+      if (val <= 20) return "Valorisation raisonnable par rapport au bénéfice.";
+      if (val <= 35) return "Valorisation élevée, mais possible pour une entreprise en croissance.";
+      return "P/E très élevé : prudence, l'action peut être surévaluée.";
+    }
+    function conclusionPB(val) {
+      if (!isFinite(val) || val <= 0) return '';
+      if (val < 1) return "L'action se négocie sous sa valeur comptable. Peut indiquer une sous-évaluation.";
+      if (val <= 3) return "Valorisation cohérente avec la valeur comptable.";
+      return "Valorisation supérieure à la valeur comptable. À surveiller.";
+    }
+  </script>
+</body>
+</html>
